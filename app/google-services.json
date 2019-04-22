@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "870437505681",
+    "firebase_url": "https://shopping-manager-42f3b.firebaseio.com",
+    "project_id": "shopping-manager-42f3b",
+    "storage_bucket": "shopping-manager-42f3b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:870437505681:android:b2cf5b00c220054c",
+        "android_client_info": {
+          "package_name": "com.RafalGiemzaProduction.shoppingmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "870437505681-32nb48f5r0pk7ttjouhkthgnbp0lb0bp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApKZTk6e6nhjr2zTenfSd3zqCg4y8EiIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "870437505681-32nb48f5r0pk7ttjouhkthgnbp0lb0bp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

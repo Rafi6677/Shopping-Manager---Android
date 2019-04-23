@@ -9,9 +9,6 @@ import com.example.shoppingmanager.R
 import com.example.shoppingmanager.models.ShoppingList
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_add_new_shopping_list.*
-import kotlinx.android.synthetic.main.activity_shopping_lists.*
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -24,7 +21,7 @@ class AddNewShoppingListActivity : AppCompatActivity() {
         performOnLeaveListener()
 
         addShoppingList_Button.setOnClickListener {
-            if(!newShoppingList_EditText.text.isEmpty()) {
+            if (!newShoppingList_EditText.text.isEmpty()) {
                 val shoppingListText = newShoppingList_EditText.text.toString()
                 val productsList = shoppingListText.split("\n")
                 val id = UUID.randomUUID().toString()

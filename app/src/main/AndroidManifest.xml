@@ -9,6 +9,13 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".activities.RegistrationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
         <activity
                 android:name=".activities.ProductsActivity"
                 android:label="@string/title_activity_products"
@@ -17,20 +24,7 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".activities.ShoppingListsActivity"/>
         </activity>
-        <activity
-                android:name=".activities.WorkingWithShoppingListActivityBackup"
-                android:label="@string/title_activity_working_with_shopping_list"
-                android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".activities.ShoppingListsActivity"/>
-        </activity>
         <activity android:name=".activities.ShoppingListsActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:name=".activities.AddNewShoppingListActivity">
         </activity>

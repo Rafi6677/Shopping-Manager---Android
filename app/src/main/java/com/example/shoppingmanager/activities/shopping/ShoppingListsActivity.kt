@@ -1,4 +1,4 @@
-package com.example.shoppingmanager.activities
+package com.example.shoppingmanager.activities.shopping
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -11,10 +11,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_shopping_lists.*
-import kotlinx.android.synthetic.main.shopping_list_row.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 

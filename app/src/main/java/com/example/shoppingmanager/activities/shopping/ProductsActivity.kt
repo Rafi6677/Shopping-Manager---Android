@@ -1,8 +1,7 @@
-package com.example.shoppingmanager.activities
+package com.example.shoppingmanager.activities.shopping
 
 import android.content.Intent
 import android.support.design.widget.TabLayout
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 
 import android.support.v4.app.Fragment
@@ -15,13 +14,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.shoppingmanager.models.ShoppingList
 import com.example.shoppingmanager.viewmodels.ShoppingListProductItem
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_products.*
@@ -44,7 +39,9 @@ class ProductsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.title = "Zakupy z "
 
-        shoppingList = intent.getParcelableExtra(ShoppingListsActivity.SHOPPING_LIST_KEY)
+        shoppingList = intent.getParcelableExtra(
+            ShoppingListsActivity.SHOPPING_LIST_KEY
+        )
 
         productsToBuyAdapter.clear()
         boughtProductsAdapter.clear()
@@ -77,7 +74,9 @@ class ProductsActivity : AppCompatActivity() {
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
-            return PlaceholderFragment.newInstance(position + 1)
+            return PlaceholderFragment.newInstance(
+                position + 1
+            )
         }
 
         override fun getCount(): Int {
@@ -143,9 +142,11 @@ class ProductsActivity : AppCompatActivity() {
             }
 
             if(arguments?.getInt(ARG_SECTION_NUMBER) == 1) {
-                rootView.products_RecyclerView.adapter = productsToBuyAdapter
+                rootView.products_RecyclerView.adapter =
+                    productsToBuyAdapter
             } else {
-                rootView.products_RecyclerView.adapter = boughtProductsAdapter
+                rootView.products_RecyclerView.adapter =
+                    boughtProductsAdapter
             }
 
             return rootView

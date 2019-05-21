@@ -1,4 +1,4 @@
-package com.example.shoppingmanager.activities
+package com.example.shoppingmanager.activities.shopping
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity

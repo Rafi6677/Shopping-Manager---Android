@@ -1,4 +1,4 @@
-package com.example.shoppingmanager.activities
+package com.example.shoppingmanager.activities.registerlogin
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -11,5 +11,7 @@ class RegistrationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_registration)
 
         supportActionBar?.title = "Shopping Manager - Rejestracja"
+
+
     }
 }

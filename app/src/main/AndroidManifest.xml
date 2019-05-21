@@ -9,7 +9,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".activities.RegistrationActivity">
+        <activity android:name=".activities.registerlogin.LoginActivity">
+        </activity>
+        <activity android:name=".activities.registerlogin.RegistrationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -17,16 +19,16 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".activities.ProductsActivity"
+                android:name=".activities.shopping.ProductsActivity"
                 android:label="@string/title_activity_products"
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".activities.ShoppingListsActivity"/>
+                    android:value=".activities.shopping.ShoppingListsActivity"/>
         </activity>
-        <activity android:name=".activities.ShoppingListsActivity">
+        <activity android:name=".activities.shopping.ShoppingListsActivity">
         </activity>
-        <activity android:name=".activities.AddNewShoppingListActivity">
+        <activity android:name=".activities.shopping.AddNewShoppingListActivity">
         </activity>
     </application>
 

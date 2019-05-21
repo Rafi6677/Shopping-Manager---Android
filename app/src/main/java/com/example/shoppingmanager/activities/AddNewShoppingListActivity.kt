@@ -1,6 +1,5 @@
 package com.example.shoppingmanager.activities
 
-import android.annotation.TargetApi
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -21,12 +20,10 @@ class AddNewShoppingListActivity : AppCompatActivity() {
         performOnLeaveListener()
 
         addShoppingList_Button.setOnClickListener {
-            if (!newShoppingList_EditText.text.isEmpty()) {
+            if (newShoppingList_EditText.text.isNotEmpty()) {
                 val shoppingListText = newShoppingList_EditText.text.toString()
                 val productsList = shoppingListText.split("\n")
                 val id = UUID.randomUUID().toString()
-
-                println(productsList)
 
                 val products = HashMap<String, Boolean>()
                 productsList.forEach {

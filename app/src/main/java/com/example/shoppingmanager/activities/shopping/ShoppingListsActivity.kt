@@ -4,8 +4,11 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.example.shoppingmanager.R
+import com.example.shoppingmanager.activities.registerlogin.RegistrationActivity
 import com.example.shoppingmanager.models.ShoppingList
+import com.example.shoppingmanager.models.User
 import com.example.shoppingmanager.viewmodels.ShoppingListItem
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -21,6 +24,7 @@ class ShoppingListsActivity : AppCompatActivity() {
     val shoppingListsAdapter = GroupAdapter<ViewHolder>()
 
     companion object {
+        var currentUser: User? = null
         const val SHOPPING_LIST_KEY = "shoppingListKey"
     }
 
@@ -33,7 +37,32 @@ class ShoppingListsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        verifyUserIsLoggedIn()
+        fetchCurrentUser()
         showData()
+    }
+
+    private fun verifyUserIsLoggedIn() {
+        val uid = FirebaseAuth.getInstance().uid
+        if (uid == null) {
+            val intent = Intent(this, RegistrationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+    }
+
+
+    private fun fetchCurrentUser() {
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+
+        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                currentUser = p0.getValue(User::class.java)
+            }
+
+            override fun onCancelled(p0: DatabaseError) {}
+        })
     }
 
     private fun showData() {
@@ -44,7 +73,8 @@ class ShoppingListsActivity : AppCompatActivity() {
 
         currentDate_TextView.text = "Dziś jest:\n$dateText"
 
-        val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists")
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid")
 
         ref.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {

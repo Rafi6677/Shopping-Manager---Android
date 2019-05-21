@@ -3,7 +3,6 @@ package com.example.shoppingmanager.activities.shopping
 import android.content.Intent
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
-
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -16,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.shoppingmanager.models.ShoppingList
 import com.example.shoppingmanager.viewmodels.ShoppingListProductItem
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
@@ -104,8 +104,9 @@ class ProductsActivity : AppCompatActivity() {
             productsToBuyAdapter.setOnItemLongClickListener { item, view ->
                 val shoppingListProductItem = item as ShoppingListProductItem
                 val productName = shoppingListProductItem.text
+                val uid = FirebaseAuth.getInstance().uid
                 val id = shoppingList!!.id
-                val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$id")
+                val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid/$id")
 
                 for ((key, _) in shoppingList!!.products) {
                     if(key == productName) {
@@ -124,8 +125,9 @@ class ProductsActivity : AppCompatActivity() {
             boughtProductsAdapter.setOnItemLongClickListener { item, view ->
                 val shoppingListProductItem = item as ShoppingListProductItem
                 val productName = shoppingListProductItem.text
+                val uid = FirebaseAuth.getInstance().uid
                 val id = shoppingList!!.id
-                val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$id")
+                val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid/$id")
 
                 for ((key, _) in shoppingList!!.products) {
                     if(key == productName) {
@@ -168,8 +170,9 @@ class ProductsActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
 
+        val uid = FirebaseAuth.getInstance().uid
         val id = shoppingList!!.id
-        val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$id")
+        val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid/$id")
         ref.setValue(shoppingList!!)
 
         val previousIntent = Intent(this, ShoppingListsActivity::class.java)

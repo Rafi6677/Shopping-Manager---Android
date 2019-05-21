@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import com.example.shoppingmanager.R
 import com.example.shoppingmanager.models.ShoppingList
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_add_new_shopping_list.*
 import java.util.*
@@ -23,6 +24,7 @@ class AddNewShoppingListActivity : AppCompatActivity() {
             if (newShoppingList_EditText.text.isNotEmpty()) {
                 val shoppingListText = newShoppingList_EditText.text.toString()
                 val productsList = shoppingListText.split("\n")
+                val uid = FirebaseAuth.getInstance().uid
                 val id = UUID.randomUUID().toString()
 
                 val products = HashMap<String, Boolean>()
@@ -31,7 +33,7 @@ class AddNewShoppingListActivity : AppCompatActivity() {
                 }
 
                 val shoppingList = ShoppingList(id, products, Date())
-                val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$id")
+                val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid/$id")
 
                 ref.setValue(shoppingList)
 

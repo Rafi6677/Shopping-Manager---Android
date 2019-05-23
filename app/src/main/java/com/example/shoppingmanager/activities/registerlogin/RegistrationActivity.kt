@@ -34,9 +34,17 @@ class RegistrationActivity : AppCompatActivity() {
         val email = emailInputRegister_EditText.text.toString()
         val password = passwordInputRegister_EditText.text.toString()
         val password2 = repeatPasswordInputRegister_EditText.text.toString()
+        var phoneNumber = phoneNumberInput_EditText.text.toString()
 
         if(email.isEmpty() || password.isEmpty() || password2.isEmpty() || nick.isEmpty()) {
-            Toast.makeText(this, "Wszystkie pola muszą być wypełnione.", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "Wszystkie pola oznaczone * muszą być wypełnione.", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+
+        if(phoneNumber.length != 9 && phoneNumber.isNotEmpty()) {
+            phoneNumber = "0"
+            Toast.makeText(this, "Nieprawidłowy numer telefonu", Toast.LENGTH_SHORT)
                 .show()
             return
         }
@@ -50,7 +58,7 @@ class RegistrationActivity : AppCompatActivity() {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (!it.isSuccessful) return@addOnCompleteListener
-                saveUserToDatabase()
+                saveUserToDatabase(phoneNumber)
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Coś poszło nie tak... Spróbuj ponownie", Toast.LENGTH_SHORT)
@@ -59,11 +67,11 @@ class RegistrationActivity : AppCompatActivity() {
             }
     }
 
-    private fun saveUserToDatabase() {
+    private fun saveUserToDatabase(phoneNumber: String) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
-        val user = User(uid, nickInputRegister_EditText.text.toString())
+        val user = User(uid, nickInputRegister_EditText.text.toString(), phoneNumber)
 
         ref.setValue(user)
             .addOnSuccessListener {

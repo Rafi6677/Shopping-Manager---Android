@@ -17,7 +17,7 @@ class RegistrationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
 
-        supportActionBar?.title = "Shopping Manager - Rejestracja"
+        supportActionBar?.title = "Rejestracja"
 
         registerUser_Button.setOnClickListener {
             performRegistration()
@@ -67,6 +67,9 @@ class RegistrationActivity : AppCompatActivity() {
 
         ref.setValue(user)
             .addOnSuccessListener {
+                Toast.makeText(this, "Rejestrowanie użytkownika...", Toast.LENGTH_SHORT)
+                    .show()
+
                 val intent = Intent(this, ShoppingListsActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)

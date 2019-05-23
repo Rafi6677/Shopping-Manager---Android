@@ -12,11 +12,6 @@
         <activity android:name=".activities.registerlogin.LoginActivity">
         </activity>
         <activity android:name=".activities.registerlogin.RegistrationActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity
                 android:name=".activities.shopping.ProductsActivity"
@@ -27,6 +22,11 @@
                     android:value=".activities.shopping.ShoppingListsActivity"/>
         </activity>
         <activity android:name=".activities.shopping.ShoppingListsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".activities.shopping.AddNewShoppingListActivity">
         </activity>

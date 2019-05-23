@@ -15,7 +15,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        supportActionBar?.title = "Shopping Manager - Logowanie"
+        supportActionBar?.title = "Logowanie"
 
         login_Button.setOnClickListener {
             performLogin()
@@ -35,9 +35,13 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
+        Toast.makeText(this, "Logowanie...", Toast.LENGTH_SHORT)
+            .show()
+
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (!it.isSuccessful) return@addOnCompleteListener
+
                 val intent = Intent(this, ShoppingListsActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)

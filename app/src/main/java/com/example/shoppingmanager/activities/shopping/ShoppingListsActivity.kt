@@ -4,11 +4,13 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.DividerItemDecoration
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import com.example.shoppingmanager.R
 import com.example.shoppingmanager.activities.registerlogin.RegistrationActivity
+import com.example.shoppingmanager.activities.settings.SettingsActivity
 import com.example.shoppingmanager.models.ShoppingList
 import com.example.shoppingmanager.models.User
 import com.example.shoppingmanager.viewmodels.ShoppingListItem
@@ -36,14 +38,12 @@ class ShoppingListsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shopping_lists)
 
-        finishShopping_Button.setOnClickListener {
+        verifyUserIsLoggedIn()
+
+        addNewShoppingList_Button.setOnClickListener {
             val intent = Intent(this, AddNewShoppingListActivity::class.java)
             startActivity(intent)
         }
-
-        verifyUserIsLoggedIn()
-        fetchCurrentUser()
-        showData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -55,14 +55,21 @@ class ShoppingListsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menuSettings -> {
-                /*val intent = Intent(this, NewMessageActivity::class.java)
-                startActivity(intent)*/
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
             }
             R.id.menuSignOut -> {
-                FirebaseAuth.getInstance().signOut()
-                val intent = Intent(this, RegistrationActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+                val dialog = AlertDialog.Builder(this)
+                dialog.setTitle("UWAGA!")
+                    .setMessage("Czy na pewno chcesz się wylogować?")
+                    .setPositiveButton("TAK") { _, _ ->
+                        FirebaseAuth.getInstance().signOut()
+                        val intent = Intent(this, RegistrationActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    }
+                    .setNegativeButton("NIE") { _, _ ->  }
+                    .show()
             }
         }
 
@@ -71,10 +78,15 @@ class ShoppingListsActivity : AppCompatActivity() {
 
     private fun verifyUserIsLoggedIn() {
         val uid = FirebaseAuth.getInstance().uid
+        println(uid)
         if (uid == null) {
+            println("niezalogowany")
             val intent = Intent(this, RegistrationActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+        } else {
+            fetchCurrentUser()
+            showData()
         }
     }
 

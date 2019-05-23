@@ -8,11 +8,13 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.example.shoppingmanager.R
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.shoppingmanager.models.ShoppingList
 import com.example.shoppingmanager.viewmodels.ShoppingListProductItem
 import com.google.firebase.auth.FirebaseAuth
@@ -59,17 +61,6 @@ class ProductsActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-
-        if (id == R.id.action_settings) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
@@ -101,7 +92,10 @@ class ProductsActivity : AppCompatActivity() {
                 }
             }
 
-            productsToBuyAdapter.setOnItemLongClickListener { item, view ->
+            productsToBuyAdapter.setOnItemLongClickListener { item, _ ->
+                Toast.makeText(this.context, "Dodano do sekcji 'KUPIONE'.",Toast.LENGTH_SHORT)
+                    .show()
+
                 val shoppingListProductItem = item as ShoppingListProductItem
                 val productName = shoppingListProductItem.text
                 val uid = FirebaseAuth.getInstance().uid
@@ -122,7 +116,10 @@ class ProductsActivity : AppCompatActivity() {
                 item.isLongClickable
             }
 
-            boughtProductsAdapter.setOnItemLongClickListener { item, view ->
+            boughtProductsAdapter.setOnItemLongClickListener { item, _ ->
+                Toast.makeText(this.context, "Dodano do sekcji 'DO KUPIENIA'.",Toast.LENGTH_SHORT)
+                    .show()
+
                 val shoppingListProductItem = item as ShoppingListProductItem
                 val productName = shoppingListProductItem.text
                 val uid = FirebaseAuth.getInstance().uid
@@ -150,6 +147,8 @@ class ProductsActivity : AppCompatActivity() {
                 rootView.products_RecyclerView.adapter =
                     boughtProductsAdapter
             }
+
+            rootView.products_RecyclerView.addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
 
             return rootView
         }

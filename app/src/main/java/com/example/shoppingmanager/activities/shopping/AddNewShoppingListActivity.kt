@@ -18,6 +18,8 @@ class AddNewShoppingListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_shopping_list)
 
+        supportActionBar?.title = "Nowa lista zakupów:"
+
         performOnLeaveListener()
 
         addShoppingList_Button.setOnClickListener {

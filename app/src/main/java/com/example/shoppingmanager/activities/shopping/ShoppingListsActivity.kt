@@ -4,7 +4,6 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.DividerItemDecoration
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
@@ -78,9 +77,7 @@ class ShoppingListsActivity : AppCompatActivity() {
 
     private fun verifyUserIsLoggedIn() {
         val uid = FirebaseAuth.getInstance().uid
-        println(uid)
         if (uid == null) {
-            println("niezalogowany")
             val intent = Intent(this, RegistrationActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)

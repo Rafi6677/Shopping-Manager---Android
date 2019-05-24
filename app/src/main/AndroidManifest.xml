@@ -18,7 +18,7 @@
         <activity android:name=".activities.settings.SettingsActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".activities.shopping.ShoppingListsActivity"/>
+                    android:value="com.example.shoppingmanager.activities.shopping.ShoppingListsActivity"/>
         </activity>
         <activity android:name=".activities.registerlogin.LoginActivity">
         </activity>
@@ -30,9 +30,12 @@
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".activities.shopping.ShoppingListsActivity"/>
+                    android:value="com.example.shoppingmanager.activities.shopping.ShoppingListsActivity"/>
         </activity>
         <activity android:name=".activities.shopping.AddNewShoppingListActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.example.shoppingmanager.activities.shopping.ShoppingListsActivity"/>
         </activity>
     </application>
 

@@ -27,6 +27,7 @@ import java.util.*
 class ShoppingListsActivity : AppCompatActivity() {
 
     val shoppingListsAdapter = GroupAdapter<ViewHolder>()
+    var numberOfShoppingLists = 0
 
     companion object {
         var currentUser: User? = null
@@ -36,11 +37,13 @@ class ShoppingListsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shopping_lists)
+        numberOfShoppingLists = 0
 
         verifyUserIsLoggedIn()
 
         addNewShoppingList_Button.setOnClickListener {
             val intent = Intent(this, AddNewShoppingListActivity::class.java)
+            intent.putExtra("NumberOfShoppingLists", numberOfShoppingLists)
             startActivity(intent)
         }
     }
@@ -123,7 +126,7 @@ class ShoppingListsActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {}
         })
 
-        val shoppingRef = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid")
+        val shoppingRef = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid").orderByChild("priority")
 
         shoppingRef.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
@@ -131,6 +134,7 @@ class ShoppingListsActivity : AppCompatActivity() {
                     val shoppingList = it.getValue(ShoppingList::class.java)
                     if (shoppingList != null) {
                         shoppingListsAdapter.add(ShoppingListItem(shoppingList))
+                        numberOfShoppingLists++
                     }
                 }
             }

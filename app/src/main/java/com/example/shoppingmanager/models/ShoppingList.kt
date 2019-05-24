@@ -6,6 +6,6 @@ import java.util.*
 import kotlin.collections.HashMap
 
 @Parcelize
-class ShoppingList(val id: String, val products: HashMap<String, Boolean>, val date: Date): Parcelable {
-    constructor(): this("", HashMap<String, Boolean>(), Date())
+class ShoppingList(val id: String, val products: HashMap<String, Boolean>, val date: Date, val priority: Int): Parcelable {
+    constructor(): this("", HashMap<String, Boolean>(), Date(), 1)
 }

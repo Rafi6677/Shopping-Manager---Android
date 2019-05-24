@@ -16,7 +16,10 @@ class ShoppingListItem(val shoppingList: ShoppingList): Item<ViewHolder>() {
 
         val shoppingListInfo = "Lista z dnia:\n<b>$text</b>"
 
-        viewHolder.itemView.shoppingListItem.text = Html.fromHtml(shoppingListInfo)
+        val text1 = "Lista z dnia:\n"
+        val text2 = "<b>$text</b>"
+
+        viewHolder.itemView.shoppingListItem.text = text1 + Html.fromHtml(text2)
     }
 
     override fun getLayout(): Int {

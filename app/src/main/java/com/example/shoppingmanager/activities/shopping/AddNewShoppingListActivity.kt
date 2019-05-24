@@ -14,11 +14,17 @@ import kotlin.collections.HashMap
 
 class AddNewShoppingListActivity : AppCompatActivity() {
 
+    var numberOfShoppingLists = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_shopping_list)
 
         supportActionBar?.title = "Nowa lista zakupów:"
+
+        numberOfShoppingLists = intent.getIntExtra("NumberOfShoppingLists", 0)
+        numberOfShoppingLists *= (-1)
+        println(numberOfShoppingLists)
 
         performOnLeaveListener()
 
@@ -34,7 +40,7 @@ class AddNewShoppingListActivity : AppCompatActivity() {
                     products[it] = false
                 }
 
-                val shoppingList = ShoppingList(id, products, Date())
+                val shoppingList = ShoppingList(id, products, Date(), numberOfShoppingLists)
                 val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid/$id")
 
                 ref.setValue(shoppingList)

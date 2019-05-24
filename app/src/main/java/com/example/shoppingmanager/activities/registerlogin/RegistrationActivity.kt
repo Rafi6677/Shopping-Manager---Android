@@ -73,6 +73,9 @@ class RegistrationActivity : AppCompatActivity() {
 
         val user = User(uid, nickInputRegister_EditText.text.toString(), phoneNumber)
 
+        Toast.makeText(this, "Rejestrowanie użytkownika...", Toast.LENGTH_SHORT)
+            .show()
+
         ref.setValue(user)
             .addOnSuccessListener {
                 Toast.makeText(this, "Rejestrowanie użytkownika...", Toast.LENGTH_SHORT)

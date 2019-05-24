@@ -1,8 +1,10 @@
 package com.example.shoppingmanager.activities.settings
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.widget.Toast
 import com.example.shoppingmanager.R
 import com.example.shoppingmanager.activities.shopping.ShoppingListsActivity
@@ -49,7 +51,6 @@ class SettingsActivity : AppCompatActivity() {
             when(isChecked) {
                 true -> {
                     isSendingSmsTurnedOn = true
-                    //phoneNumberEdit_EditText.setText(phoneNumber)
                 }
                 else -> {
                     isSendingSmsTurnedOn = false

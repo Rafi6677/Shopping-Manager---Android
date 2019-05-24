@@ -1,20 +1,26 @@
 package com.example.shoppingmanager.activities.shopping
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.telephony.SmsManager
 import android.widget.Toast
 import com.example.shoppingmanager.R
+import com.example.shoppingmanager.activities.settings.SettingsActivity
 import com.example.shoppingmanager.models.ShoppingList
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_add_new_shopping_list.*
 import java.util.*
+import java.util.jar.Manifest
 import kotlin.collections.HashMap
 
 class AddNewShoppingListActivity : AppCompatActivity() {
 
-    var numberOfShoppingLists = 0
+    private var numberOfShoppingLists: Int = 0
+    private val requestSendSms: Int = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +30,6 @@ class AddNewShoppingListActivity : AppCompatActivity() {
 
         numberOfShoppingLists = intent.getIntExtra("NumberOfShoppingLists", 0)
         numberOfShoppingLists *= (-1)
-        println(numberOfShoppingLists)
 
         performOnLeaveListener()
 
@@ -45,14 +50,59 @@ class AddNewShoppingListActivity : AppCompatActivity() {
 
                 ref.setValue(shoppingList)
 
-                finish()
-                val intent = Intent(this, ShoppingListsActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+                trySendSmsNotification()
             } else {
                 Toast.makeText(this, "Pole nie może być puste.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun trySendSmsNotification() {
+        val currentUser = ShoppingListsActivity.currentUser
+        val phoneNumber = currentUser!!.phoneNumber
+
+        if(phoneNumber.length == 9) {
+            if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.SEND_SMS), requestSendSms)
+            } else {
+                sendSms(phoneNumber)
+            }
+        } else {
+            finish()
+            val intent = Intent(this, ShoppingListsActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        val currentUser = ShoppingListsActivity.currentUser
+        val phoneNumber = currentUser!!.phoneNumber
+
+        if(requestCode == requestSendSms) {
+            sendSms(phoneNumber)
+        }
+        else {
+            finish()
+            val intent = Intent(this, ShoppingListsActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+    }
+
+    private fun sendSms(phoneNumber: String) {
+        val text = "Została dodana nowa lista zakupów w aplikacji 'Shopping Manager'"
+
+        SmsManager.getDefault().sendTextMessage(phoneNumber, null, text, null, null)
+        Toast.makeText(this, "Powiaomienie sms zostało wysłane.", Toast.LENGTH_SHORT)
+            .show()
+
+        finish()
+        val intent = Intent(this, ShoppingListsActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
     private fun performOnLeaveListener() {

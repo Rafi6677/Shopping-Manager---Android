@@ -36,7 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/linearLayout">
         <TextView
-                android:text="TextView"
+                android:text="Zalogowano:\n"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/currentUser_TextView"
@@ -51,7 +51,7 @@
                 android:paddingBottom="8dp"
                 android:background="@drawable/rounded_textview_green_dark"/>
         <TextView
-                android:text="TextView"
+                android:text="Dziś jest:\n"
                 android:textAlignment="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

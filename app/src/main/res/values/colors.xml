@@ -10,4 +10,5 @@
 
     <color name="colorGreenLight">#0F8606</color>
     <color name="colorRedDark">#880A16</color>
+    <color name="colorGrey">#5F5B5B</color>
 </resources>

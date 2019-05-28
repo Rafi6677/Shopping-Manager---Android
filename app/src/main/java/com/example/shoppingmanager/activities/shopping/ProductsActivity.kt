@@ -53,6 +53,9 @@ class ProductsActivity : AppCompatActivity() {
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+
+        Toast.makeText(this, "Przytrzymaj produkt, aby przenieść go do drugiej sekcji.", Toast.LENGTH_SHORT)
+            .show()
     }
 
 

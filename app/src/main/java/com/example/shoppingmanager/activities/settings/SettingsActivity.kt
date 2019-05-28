@@ -5,8 +5,10 @@ import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AlertDialog
 import android.widget.Toast
 import com.example.shoppingmanager.R
+import com.example.shoppingmanager.activities.registerlogin.RegistrationActivity
 import com.example.shoppingmanager.activities.shopping.ShoppingListsActivity
 import com.example.shoppingmanager.models.User
 import com.google.firebase.auth.FirebaseAuth
@@ -95,6 +97,21 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
         }
+
+        deleteAllShoppingLists_Button.setOnClickListener {
+            val dialog = AlertDialog.Builder(this)
+            dialog.setTitle("UWAGA!")
+                .setMessage("Czy na pewno chcesz się usunąć wszystkie listy zakupów?")
+                .setPositiveButton("TAK") { _, _ ->
+                    val ref = FirebaseDatabase.getInstance().getReference("shopping-lists/${currentUser!!.uid}")
+                    ref.removeValue()
+
+                    Toast.makeText(this, "Usunięto wszystkie listy zakupów.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                .setNegativeButton("NIE") { _, _ ->  }
+                .show()
+        }
     }
 
     private fun fetchCurrentUser() {
@@ -108,5 +125,9 @@ class SettingsActivity : AppCompatActivity() {
 
             override fun onCancelled(p0: DatabaseError) {}
         })
+    }
+
+    private fun prepareButtons() {
+
     }
 }

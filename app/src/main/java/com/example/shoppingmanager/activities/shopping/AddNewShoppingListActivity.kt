@@ -106,7 +106,7 @@ class AddNewShoppingListActivity : AppCompatActivity() {
     }
 
     private fun performOnLeaveListener() {
-        newShoppingList_EditText.setOnFocusChangeListener { v, hasFocus ->
+        newShoppingList_EditText.setOnFocusChangeListener { _, hasFocus ->
             if(!hasFocus) {
                 if(newShoppingList_EditText.text.isEmpty()) {
                     Toast.makeText(this, "Pole nie może być puste.", Toast.LENGTH_SHORT).show()

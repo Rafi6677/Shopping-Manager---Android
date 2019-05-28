@@ -35,6 +35,6 @@
             app:layout_constraintBottom_toTopOf="@+id/addShoppingList_Button"
             android:textSize="22sp"
             android:textColor="@android:color/white"
-            android:hint="Wprowadź produkty..."
+            android:hint="Wprowadź produkty...\n(każdy produkt musi być zapisany w oddzielnej linii)"
             android:textColorHint="@android:color/white"/>
 </android.support.constraint.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.example.shoppingmanager.R
 import com.example.shoppingmanager.activities.registerlogin.RegistrationActivity
 import com.example.shoppingmanager.activities.settings.SettingsActivity
@@ -135,6 +136,12 @@ class ShoppingListsActivity : AppCompatActivity() {
                     if (shoppingList != null) {
                         shoppingListsAdapter.add(ShoppingListItem(shoppingList))
                         numberOfShoppingLists++
+                    }
+
+                    if(numberOfShoppingLists == 0) {
+                        noShoppingListsInfo_TextView.visibility = View.VISIBLE
+                    } else {
+                        noShoppingListsInfo_TextView.visibility = View.INVISIBLE
                     }
                 }
             }

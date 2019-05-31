@@ -8,10 +8,10 @@
         tools:context="com.example.shoppingmanager.activities.shopping.AddNewShoppingListActivity"
         android:background="@color/colorBackground">
     <Button
-            android:text="Dodaj listę"
+            android:text="Zaktualizuj listę"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/addShoppingList_Button" app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/updateShoppingList_Button" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
             android:inputType="textMultiLine"
             android:ems="10"
             android:gravity="bottom"
-            android:id="@+id/newShoppingList_EditText"
+            android:id="@+id/products_EditText"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
@@ -36,6 +36,6 @@
             android:textColor="@android:color/white"
             android:hint="Wprowadź produkty..."
             android:textColorHint="@android:color/white" app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintBottom_toTopOf="@+id/addShoppingList_Button" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/updateShoppingList_Button" android:layout_marginBottom="8dp"
     />
 </android.support.constraint.ConstraintLayout>

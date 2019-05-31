@@ -11,9 +11,15 @@
             android:roundIcon="@mipmap/ic_main_icon_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".activities.shopping.EditShoppingListActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.example.shoppingmanager.activities.shopping.ShoppingListsActivity"/>
+        </activity>
         <activity android:name=".activities.shopping.ShoppingListsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

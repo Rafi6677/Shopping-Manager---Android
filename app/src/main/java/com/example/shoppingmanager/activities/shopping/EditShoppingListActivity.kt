@@ -12,50 +12,71 @@ import com.example.shoppingmanager.models.ShoppingList
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_add_new_shopping_list.*
+import kotlinx.android.synthetic.main.activity_edit_shopping_list.*
 import java.util.*
 import kotlin.collections.HashMap
 
-class AddNewShoppingListActivity : AppCompatActivity() {
+class EditShoppingListActivity : AppCompatActivity() {
 
-    private var numberOfShoppingLists: Int = 0
+    var shoppingList: ShoppingList ?= null
+    private var numberOfShoppingLists = 0
     private val requestSendSms: Int = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_new_shopping_list)
+        setContentView(R.layout.activity_edit_shopping_list)
 
-        supportActionBar?.title = "Nowa lista zakupów:"
+        supportActionBar?.title = "Edycja listy zakupów:"
+
+        shoppingList = intent.getParcelableExtra(
+            ShoppingListsActivity.SHOPPING_LIST_KEY
+        )
 
         numberOfShoppingLists = intent.getIntExtra("NumberOfShoppingLists", 0)
         numberOfShoppingLists *= (-1)
 
-        /*Toast.makeText(this, "Każdy produkt musi być dodany w odzielnej linii.", Toast.LENGTH_SHORT)
-            .show()*/
+        setupData()
 
-        performOnLeaveListener()
-
-        addShoppingList_Button.setOnClickListener {
-            if (newShoppingList_EditText.text.isNotEmpty()) {
-                val shoppingListText = newShoppingList_EditText.text.toString()
+        updateShoppingList_Button.setOnClickListener {
+            if (products_EditText.text.isNotEmpty()) {
+                val shoppingListText = products_EditText.text.toString()
                 val productsList = shoppingListText.split("\n")
                 val uid = FirebaseAuth.getInstance().uid
-                val id = UUID.randomUUID().toString()
+                val id = shoppingList!!.id
                 val products = HashMap<String, Boolean>()
 
                 productsList.forEach {
                     products[it] = false
                 }
 
-                val shoppingList = ShoppingList(id, products, Date(), numberOfShoppingLists)
-                val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid/$id")
+                val updatedShoppingList = ShoppingList(id, products, Date(), numberOfShoppingLists)
+                val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid/${shoppingList!!.id}")
 
-                ref.setValue(shoppingList)
+                ref.setValue(updatedShoppingList)
 
                 trySendSmsNotification()
             } else {
                 Toast.makeText(this, "Pole nie może być puste.", Toast.LENGTH_SHORT).show()
             }
+
+            finish()
+            val intent = Intent(this, ShoppingListsActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
+    }
+
+    private fun setupData() {
+        var productsText = ""
+
+        for ((key, _) in shoppingList!!.products) {
+            productsText += key + "\n"
+        }
+
+        val length = productsText.length
+        productsText = productsText.substring(0, length-2)
+
+        products_EditText.setText(productsText)
     }
 
     private fun trySendSmsNotification() {
@@ -94,7 +115,7 @@ class AddNewShoppingListActivity : AppCompatActivity() {
     }
 
     private fun sendSms(phoneNumber: String) {
-        val text = "Została dodana nowa lista zakupów w aplikacji 'Shopping Manager'"
+        val text = "Lista zakupów w aplikacji 'Shopping Manager' z dnia ${shoppingList!!.date} została zaktualizowana."
 
         SmsManager.getDefault().sendTextMessage(phoneNumber, null, text, null, null)
         Toast.makeText(this, "Powiadomienie sms zostało wysłane.", Toast.LENGTH_SHORT)
@@ -107,7 +128,7 @@ class AddNewShoppingListActivity : AppCompatActivity() {
     }
 
     private fun performOnLeaveListener() {
-        newShoppingList_EditText.setOnFocusChangeListener { _, hasFocus ->
+        products_EditText.setOnFocusChangeListener { _, hasFocus ->
             if(!hasFocus) {
                 if(newShoppingList_EditText.text.isEmpty()) {
                     Toast.makeText(this, "Pole nie może być puste.", Toast.LENGTH_SHORT).show()

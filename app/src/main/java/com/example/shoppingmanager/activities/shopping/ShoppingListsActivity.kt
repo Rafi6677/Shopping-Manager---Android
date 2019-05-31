@@ -159,6 +159,17 @@ class ShoppingListsActivity : AppCompatActivity() {
             finish()
         }
 
+        shoppingListsAdapter.setOnItemLongClickListener { item, view ->
+            val shoppingListItem = item as ShoppingListItem
+
+            val intent = Intent(this, EditShoppingListActivity::class.java)
+            intent.putExtra(SHOPPING_LIST_KEY, shoppingListItem.shoppingList)
+            intent.putExtra("NumberOfShoppingLists", numberOfShoppingLists)
+            startActivity(intent)
+
+            item.isClickable
+        }
+
         shoppingLists_RecyclerView.adapter = shoppingListsAdapter
     }
 

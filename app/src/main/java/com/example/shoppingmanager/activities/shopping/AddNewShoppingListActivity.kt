@@ -69,6 +69,8 @@ class AddNewShoppingListActivity : AppCompatActivity() {
                 sendSms(phoneNumber)
             }
         } else {
+            ShoppingListsActivity.shoppingListsAdapter!!.notifyDataSetChanged()
+
             finish()
             val intent = Intent(this, ShoppingListsActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)

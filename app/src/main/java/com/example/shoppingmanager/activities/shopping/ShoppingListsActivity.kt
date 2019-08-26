@@ -1,18 +1,24 @@
 package com.example.shoppingmanager.activities.shopping
 
+import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import com.example.shoppingmanager.R
 import com.example.shoppingmanager.activities.registerlogin.RegistrationActivity
 import com.example.shoppingmanager.activities.settings.SettingsActivity
 import com.example.shoppingmanager.models.ShoppingList
 import com.example.shoppingmanager.models.User
+import com.example.shoppingmanager.viewmodels.ShoppingListAdapter
 import com.example.shoppingmanager.viewmodels.ShoppingListItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -24,15 +30,21 @@ import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_shopping_lists.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
-class ShoppingListsActivity : AppCompatActivity() {
+class ShoppingListsActivity : AppCompatActivity(),
+    ShoppingListAdapter.ItemClicked,
+    ShoppingListAdapter.EditButtonClicked,
+    ShoppingListAdapter.ItemLongClicked {
 
-    val shoppingListsAdapter = GroupAdapter<ViewHolder>()
+    var shoppingLists: ArrayList<ShoppingList> = ArrayList<ShoppingList>()
+    private lateinit var layoutManager: RecyclerView.LayoutManager
     var numberOfShoppingLists = 0
 
     companion object {
         var currentUser: User? = null
         const val SHOPPING_LIST_KEY = "shoppingListKey"
+        var shoppingListsAdapter: RecyclerView.Adapter<ShoppingListAdapter.ViewHolder> ?= null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +53,10 @@ class ShoppingListsActivity : AppCompatActivity() {
         numberOfShoppingLists = 0
 
         verifyUserIsLoggedIn()
+
+        layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        shoppingLists_RecyclerView.setHasFixedSize(true)
+        shoppingLists_RecyclerView.layoutManager = layoutManager
 
         addNewShoppingList_Button.setOnClickListener {
             val intent = Intent(this, AddNewShoppingListActivity::class.java)
@@ -133,8 +149,9 @@ class ShoppingListsActivity : AppCompatActivity() {
             override fun onDataChange(p0: DataSnapshot) {
                 p0.children.forEach {
                     val shoppingList = it.getValue(ShoppingList::class.java)
-                    if (shoppingList != null) {
-                        shoppingListsAdapter.add(ShoppingListItem(shoppingList))
+                    if(shoppingList != null) {
+                        //shoppingListsAdapter.add(ShoppingListItem(shoppingList))
+                        shoppingLists.add(shoppingList)
                         numberOfShoppingLists++
                     }
 
@@ -144,33 +161,32 @@ class ShoppingListsActivity : AppCompatActivity() {
                         noShoppingListsInfo_TextView.visibility = View.INVISIBLE
                     }
                 }
+
+                shoppingListsAdapter = ShoppingListAdapter(this@ShoppingListsActivity, shoppingLists)
+                shoppingLists_RecyclerView.adapter = shoppingListsAdapter
             }
 
             override fun onCancelled(p0: DatabaseError) { }
         })
+    }
 
-        shoppingListsAdapter.setOnItemClickListener { item, _ ->
-            val shoppingListItem = item as ShoppingListItem
+    override fun onItemClicked(index: Int) {
+        val intent = Intent(this, ProductsActivity::class.java)
+        intent.putExtra(SHOPPING_LIST_KEY, shoppingLists[index])
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
+    }
 
-            val intent = Intent(this, ProductsActivity::class.java)
-            intent.putExtra(SHOPPING_LIST_KEY, shoppingListItem.shoppingList)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            finish()
-        }
+    override fun onItemLongClicked(index: Int) {
 
-        shoppingListsAdapter.setOnItemLongClickListener { item, view ->
-            val shoppingListItem = item as ShoppingListItem
+    }
 
-            val intent = Intent(this, EditShoppingListActivity::class.java)
-            intent.putExtra(SHOPPING_LIST_KEY, shoppingListItem.shoppingList)
-            intent.putExtra("NumberOfShoppingLists", numberOfShoppingLists)
-            startActivity(intent)
-
-            item.isClickable
-        }
-
-        shoppingLists_RecyclerView.adapter = shoppingListsAdapter
+    override fun onEditButtonClicked(index: Int) {
+        val intent = Intent(this, EditShoppingListActivity::class.java)
+        intent.putExtra(SHOPPING_LIST_KEY, shoppingLists[index])
+        intent.putExtra("NumberOfShoppingLists", numberOfShoppingLists)
+        startActivity(intent)
     }
 
     override fun onBackPressed() {

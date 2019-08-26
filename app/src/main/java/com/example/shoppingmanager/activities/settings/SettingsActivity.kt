@@ -73,7 +73,7 @@ class SettingsActivity : AppCompatActivity() {
                 } else {
                     val ref = FirebaseDatabase.getInstance().getReference("/users/${currentUser!!.uid}")
                     val user = User(currentUser!!.uid, currentUser!!.username, phoneNumber)
-                    println("powinno zapisac")
+
                     ref.setValue(user)
                     val previousIntent = Intent(this, ShoppingListsActivity::class.java)
                     previousIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)

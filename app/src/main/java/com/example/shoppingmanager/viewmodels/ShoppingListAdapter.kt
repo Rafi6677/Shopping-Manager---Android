@@ -15,6 +15,7 @@ class ShoppingListAdapter(context: Context, val shoppingLists: ArrayList<Shoppin
 
     private var activityEdit: EditButtonClicked = context as EditButtonClicked
     private var activityItem: ItemClicked = context as ItemClicked
+    private var activityItemLong: ItemLongClicked = context as ItemLongClicked
 
     interface ItemClicked {
         fun onItemClicked(index: Int)
@@ -36,9 +37,13 @@ class ShoppingListAdapter(context: Context, val shoppingLists: ArrayList<Shoppin
                 activityItem.onItemClicked(shoppingLists.indexOf(it.tag as ShoppingList))
             }
 
+            itemView.setOnLongClickListener {
+                activityItemLong.onItemLongClicked(shoppingLists.indexOf(it.tag as ShoppingList))
+                it.isLongClickable
+            }
+
             itemView.editShoppingList_button.setOnClickListener {
                 activityEdit.onEditButtonClicked(shoppingLists.indexOf(it.tag as ShoppingList))
-                //activityEdit.onEditButtonClicked()
             }
         }
     }

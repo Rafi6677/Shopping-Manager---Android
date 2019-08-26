@@ -37,8 +37,8 @@ class ShoppingListsActivity : AppCompatActivity(),
     ShoppingListAdapter.EditButtonClicked,
     ShoppingListAdapter.ItemLongClicked {
 
-    var shoppingLists: ArrayList<ShoppingList> = ArrayList<ShoppingList>()
     private lateinit var layoutManager: RecyclerView.LayoutManager
+    var shoppingLists: ArrayList<ShoppingList> = ArrayList<ShoppingList>()
     var numberOfShoppingLists = 0
 
     companion object {
@@ -150,7 +150,6 @@ class ShoppingListsActivity : AppCompatActivity(),
                 p0.children.forEach {
                     val shoppingList = it.getValue(ShoppingList::class.java)
                     if(shoppingList != null) {
-                        //shoppingListsAdapter.add(ShoppingListItem(shoppingList))
                         shoppingLists.add(shoppingList)
                         numberOfShoppingLists++
                     }
@@ -179,7 +178,47 @@ class ShoppingListsActivity : AppCompatActivity(),
     }
 
     override fun onItemLongClicked(index: Int) {
+        val dialog = AlertDialog.Builder(this)
+        dialog.setTitle("UWAGA!")
+            .setMessage("Czy na pewno chcesz się usunąć tę listę zakupów?")
+            .setPositiveButton("TAK") { _, _ ->
+                val ref = FirebaseDatabase.getInstance()
+                    .getReference("shopping-lists/${currentUser!!.uid}/${shoppingLists[index].id}")
+                ref.removeValue()
 
+                shoppingLists.clear()
+                numberOfShoppingLists = 0
+
+                val shoppingRef = FirebaseDatabase.getInstance().getReference("/shopping-lists/${currentUser!!.uid}").orderByChild("priority")
+
+                shoppingRef.addListenerForSingleValueEvent(object: ValueEventListener {
+                    override fun onDataChange(p0: DataSnapshot) {
+                        p0.children.forEach {
+                            val shoppingList = it.getValue(ShoppingList::class.java)
+                            if(shoppingList != null) {
+                                shoppingLists.add(shoppingList)
+                                numberOfShoppingLists++
+                            }
+                        }
+
+                        if(numberOfShoppingLists == 0) {
+                            noShoppingListsInfo_TextView.visibility = View.VISIBLE
+                        } else {
+                            noShoppingListsInfo_TextView.visibility = View.INVISIBLE
+                        }
+
+                        shoppingListsAdapter = ShoppingListAdapter(this@ShoppingListsActivity, shoppingLists)
+                        shoppingLists_RecyclerView.adapter = shoppingListsAdapter
+                    }
+
+                    override fun onCancelled(p0: DatabaseError) { }
+                })
+
+                Toast.makeText(this, "Usunięto listę zakupów.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            .setNegativeButton("NIE") { _, _ ->  }
+            .show()
     }
 
     override fun onEditButtonClicked(index: Int) {
@@ -187,18 +226,5 @@ class ShoppingListsActivity : AppCompatActivity(),
         intent.putExtra(SHOPPING_LIST_KEY, shoppingLists[index])
         intent.putExtra("NumberOfShoppingLists", numberOfShoppingLists)
         startActivity(intent)
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        val dialog = AlertDialog.Builder(this)
-        dialog.setTitle("UWAGA!")
-            .setMessage("Czy na pewno chcesz wyjść?")
-            .setPositiveButton("TAK") { _, _ ->
-                finish()
-            }
-            .setNegativeButton("NIE") { _, _ ->  }
-            .show()
     }
 }

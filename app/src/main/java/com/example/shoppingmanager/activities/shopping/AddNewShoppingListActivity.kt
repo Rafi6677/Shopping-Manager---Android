@@ -5,17 +5,29 @@ import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.telephony.SmsManager
 import android.widget.Toast
 import com.example.shoppingmanager.R
+import com.example.shoppingmanager.models.Product
 import com.example.shoppingmanager.models.ShoppingList
+import com.example.shoppingmanager.viewmodels.ProductAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_add_new_shopping_list.*
+import kotlinx.android.synthetic.main.activity_edit_shopping_list.*
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class AddNewShoppingListActivity : AppCompatActivity() {
+class AddNewShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongClicked {
+
+    private var productsList: ArrayList<Product> = ArrayList()
+    private var productAdapter: RecyclerView.Adapter<ProductAdapter.ViewHolder> ?= null
+    private lateinit var layoutManager: RecyclerView.LayoutManager
 
     private var numberOfShoppingLists: Int = 0
     private val requestSendSms: Int = 2
@@ -29,31 +41,45 @@ class AddNewShoppingListActivity : AppCompatActivity() {
         numberOfShoppingLists = intent.getIntExtra("NumberOfShoppingLists", 0)
         numberOfShoppingLists *= (-1)
 
-        /*Toast.makeText(this, "Każdy produkt musi być dodany w odzielnej linii.", Toast.LENGTH_SHORT)
-            .show()*/
+        layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+        productsList_RecyclerView.setHasFixedSize(true)
+        productsList_RecyclerView.layoutManager = layoutManager
 
-        performOnLeaveListener()
+        addProduct_Button.setOnClickListener {
+            val productText = this.product_EditText.text.toString()
 
-        addShoppingList_Button.setOnClickListener {
-            if (newShoppingList_EditText.text.isNotEmpty()) {
-                val shoppingListText = newShoppingList_EditText.text.toString()
-                val productsList = shoppingListText.split("\n")
+            if (productText == "") {
+                Toast.makeText(this, "Pole nie może być puste.", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                val product = Product(productText)
+                productsList.add(product)
+
+                productAdapter = ProductAdapter(this, productsList)
+                productsList_RecyclerView.adapter = productAdapter
+
+                this.product_EditText.setText("")
+            }
+        }
+
+        saveShoppingList_Button.setOnClickListener {
+            if (productsList.size == 0) {
+                Toast.makeText(this, "Lista zakupów musi zawierać conajmniej 1 produkt.", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
                 val uid = FirebaseAuth.getInstance().uid
                 val id = UUID.randomUUID().toString()
                 val products = HashMap<String, Boolean>()
 
                 productsList.forEach {
-                    products[it] = false
+                    products[it.productName] = false
                 }
 
                 val shoppingList = ShoppingList(id, products, Date(), numberOfShoppingLists)
                 val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid/$id")
 
                 ref.setValue(shoppingList)
-
                 trySendSmsNotification()
-            } else {
-                Toast.makeText(this, "Pole nie może być puste.", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -96,7 +122,7 @@ class AddNewShoppingListActivity : AppCompatActivity() {
     }
 
     private fun sendSms(phoneNumber: String) {
-        val text = "Została dodana nowa lista zakupów w aplikacji 'Shopping Manager'"
+        val text = "Została dodana nowa lista zakupów w aplikacji 'Shopping Manager'."
 
         SmsManager.getDefault().sendTextMessage(phoneNumber, null, text, null, null)
         Toast.makeText(this, "Powiadomienie sms zostało wysłane.", Toast.LENGTH_SHORT)
@@ -108,13 +134,16 @@ class AddNewShoppingListActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun performOnLeaveListener() {
-        newShoppingList_EditText.setOnFocusChangeListener { _, hasFocus ->
-            if(!hasFocus) {
-                if(newShoppingList_EditText.text.isEmpty()) {
-                    Toast.makeText(this, "Pole nie może być puste.", Toast.LENGTH_SHORT).show()
-                }
+    override fun onItemLongClicked(index: Int) {
+        val dialog = AlertDialog.Builder(this)
+        dialog.setTitle("UWAGA!")
+            .setMessage("Czy na pewno chcesz się usunąć ten produkt z listy zakupów?")
+            .setPositiveButton("TAK") { _, _ ->
+                productsList.removeAt(index)
+                productAdapter = ProductAdapter(this, productsList)
+                productsList_RecyclerView.adapter = productAdapter
             }
-        }
+            .setNegativeButton("NIE") {_, _ -> }
+            .show()
     }
 }

@@ -107,7 +107,6 @@ class ShoppingListsActivity : AppCompatActivity(),
         }
     }
 
-
     private fun fetchCurrentUser() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
@@ -143,30 +142,7 @@ class ShoppingListsActivity : AppCompatActivity(),
             override fun onCancelled(p0: DatabaseError) {}
         })
 
-        val shoppingRef = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid").orderByChild("priority")
-
-        shoppingRef.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                p0.children.forEach {
-                    val shoppingList = it.getValue(ShoppingList::class.java)
-                    if(shoppingList != null) {
-                        shoppingLists.add(shoppingList)
-                        numberOfShoppingLists++
-                    }
-
-                    if(numberOfShoppingLists == 0) {
-                        noShoppingListsInfo_TextView.visibility = View.VISIBLE
-                    } else {
-                        noShoppingListsInfo_TextView.visibility = View.INVISIBLE
-                    }
-                }
-
-                shoppingListsAdapter = ShoppingListAdapter(this@ShoppingListsActivity, shoppingLists)
-                shoppingLists_RecyclerView.adapter = shoppingListsAdapter
-            }
-
-            override fun onCancelled(p0: DatabaseError) { }
-        })
+        reloadRecyclerView()
     }
 
     override fun onItemClicked(index: Int) {
@@ -186,33 +162,7 @@ class ShoppingListsActivity : AppCompatActivity(),
                     .getReference("shopping-lists/${currentUser!!.uid}/${shoppingLists[index].id}")
                 ref.removeValue()
 
-                shoppingLists.clear()
-                numberOfShoppingLists = 0
-
-                val shoppingRef = FirebaseDatabase.getInstance().getReference("/shopping-lists/${currentUser!!.uid}").orderByChild("priority")
-
-                shoppingRef.addListenerForSingleValueEvent(object: ValueEventListener {
-                    override fun onDataChange(p0: DataSnapshot) {
-                        p0.children.forEach {
-                            val shoppingList = it.getValue(ShoppingList::class.java)
-                            if(shoppingList != null) {
-                                shoppingLists.add(shoppingList)
-                                numberOfShoppingLists++
-                            }
-                        }
-
-                        if(numberOfShoppingLists == 0) {
-                            noShoppingListsInfo_TextView.visibility = View.VISIBLE
-                        } else {
-                            noShoppingListsInfo_TextView.visibility = View.INVISIBLE
-                        }
-
-                        shoppingListsAdapter = ShoppingListAdapter(this@ShoppingListsActivity, shoppingLists)
-                        shoppingLists_RecyclerView.adapter = shoppingListsAdapter
-                    }
-
-                    override fun onCancelled(p0: DatabaseError) { }
-                })
+                reloadRecyclerView()
 
                 Toast.makeText(this, "Usunięto listę zakupów.", Toast.LENGTH_SHORT)
                     .show()
@@ -226,5 +176,38 @@ class ShoppingListsActivity : AppCompatActivity(),
         intent.putExtra(SHOPPING_LIST_KEY, shoppingLists[index])
         intent.putExtra("NumberOfShoppingLists", numberOfShoppingLists)
         startActivity(intent)
+    }
+
+
+    private fun reloadRecyclerView() {
+        shoppingLists.clear()
+        numberOfShoppingLists = 0
+
+        val uid = FirebaseAuth.getInstance().uid
+
+        val shoppingRef = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid").orderByChild("priority")
+
+        shoppingRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                p0.children.forEach {
+                    val shoppingList = it.getValue(ShoppingList::class.java)
+                    if(shoppingList != null) {
+                        shoppingLists.add(shoppingList)
+                        numberOfShoppingLists++
+                    }
+                }
+
+                if(numberOfShoppingLists == 0) {
+                    noShoppingListsInfo_TextView.visibility = View.VISIBLE
+                } else {
+                    noShoppingListsInfo_TextView.visibility = View.INVISIBLE
+                }
+
+                shoppingListsAdapter = ShoppingListAdapter(this@ShoppingListsActivity, shoppingLists)
+                shoppingLists_RecyclerView.adapter = shoppingListsAdapter
+            }
+
+            override fun onCancelled(p0: DatabaseError) { }
+        })
     }
 }

@@ -1,11 +1,9 @@
 package com.example.shoppingmanager.activities.shopping
 
-import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Html
@@ -19,14 +17,11 @@ import com.example.shoppingmanager.activities.settings.SettingsActivity
 import com.example.shoppingmanager.models.ShoppingList
 import com.example.shoppingmanager.models.User
 import com.example.shoppingmanager.viewmodels.ShoppingListAdapter
-import com.example.shoppingmanager.viewmodels.ShoppingListItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_shopping_lists.*
 import java.text.SimpleDateFormat
 import java.util.*

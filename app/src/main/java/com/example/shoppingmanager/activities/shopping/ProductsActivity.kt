@@ -145,16 +145,6 @@ class ProductsActivity : AppCompatActivity() {
                 productsToBuyAdapter.add(ShoppingListProductToBuyItem(productName))
                 boughtProductsAdapter.remove(item)
 
-                /*if(productsToBuyAdapter.itemCount == 0) {
-                    Toast.makeText(this.context, "Wszystkie produkty zostały kupione.", Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-                if(boughtProductsAdapter.itemCount == 0) {
-                    Toast.makeText(this.context, "Brak kupionych produktów.", Toast.LENGTH_SHORT)
-                        .show()
-                }*/
-
                 ref.setValue(shoppingList!!)
 
                 item.isLongClickable

@@ -37,7 +37,6 @@ class SettingsActivity : AppCompatActivity() {
         currentUser = ShoppingListsActivity.currentUser
 
         var phoneNumber = currentUser!!.phoneNumber
-        println(phoneNumber)
 
         if(phoneNumber.length == 9) {
             phoneNumberEdit_EditText.setText(phoneNumber)
@@ -125,9 +124,5 @@ class SettingsActivity : AppCompatActivity() {
 
             override fun onCancelled(p0: DatabaseError) {}
         })
-    }
-
-    private fun prepareButtons() {
-
     }
 }

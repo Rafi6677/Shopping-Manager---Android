@@ -9,20 +9,23 @@ import android.support.v4.app.FragmentPagerAdapter
 import com.example.shoppingmanager.R
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.shoppingmanager.models.ShoppingList
-import com.example.shoppingmanager.viewmodels.ShoppingListProductItem
+import com.example.shoppingmanager.viewmodels.ShoppingListProductBoughtItem
+import com.example.shoppingmanager.viewmodels.ShoppingListProductToBuyItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_products.*
 import kotlinx.android.synthetic.main.fragment_products.view.*
+import java.text.SimpleDateFormat
 
 class ProductsActivity : AppCompatActivity() {
 
@@ -38,12 +41,16 @@ class ProductsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
 
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = "Zakupy z "
-
         shoppingList = intent.getParcelableExtra(
             ShoppingListsActivity.SHOPPING_LIST_KEY
         )
+
+        val date = shoppingList!!.date
+        val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm")
+        val text: String = formatter.format(date)
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = "Zakupy z: $text"
 
         productsToBuyAdapter.clear()
         boughtProductsAdapter.clear()
@@ -89,9 +96,9 @@ class ProductsActivity : AppCompatActivity() {
 
             for ((key, _) in shoppingList!!.products) {
                 if(shoppingList!!.products[key] == false) {
-                    productsToBuyAdapter.add(ShoppingListProductItem(key))
+                    productsToBuyAdapter.add(ShoppingListProductToBuyItem(key))
                 } else {
-                    boughtProductsAdapter.add(ShoppingListProductItem(key))
+                    boughtProductsAdapter.add(ShoppingListProductBoughtItem(key))
                 }
             }
 
@@ -99,7 +106,7 @@ class ProductsActivity : AppCompatActivity() {
                 Toast.makeText(this.context, "Dodano do sekcji 'KUPIONE'.",Toast.LENGTH_SHORT)
                     .show()
 
-                val shoppingListProductItem = item as ShoppingListProductItem
+                val shoppingListProductItem = item as ShoppingListProductToBuyItem
                 val productName = shoppingListProductItem.text
                 val uid = FirebaseAuth.getInstance().uid
                 val id = shoppingList!!.id
@@ -111,7 +118,7 @@ class ProductsActivity : AppCompatActivity() {
                     }
                 }
 
-                boughtProductsAdapter.add(item)
+                boughtProductsAdapter.add(ShoppingListProductBoughtItem(productName))
                 productsToBuyAdapter.remove(item)
 
                 ref.setValue(shoppingList!!)
@@ -123,7 +130,7 @@ class ProductsActivity : AppCompatActivity() {
                 Toast.makeText(this.context, "Dodano do sekcji 'DO KUPIENIA'.",Toast.LENGTH_SHORT)
                     .show()
 
-                val shoppingListProductItem = item as ShoppingListProductItem
+                val shoppingListProductItem = item as ShoppingListProductBoughtItem
                 val productName = shoppingListProductItem.text
                 val uid = FirebaseAuth.getInstance().uid
                 val id = shoppingList!!.id
@@ -135,10 +142,10 @@ class ProductsActivity : AppCompatActivity() {
                     }
                 }
 
-                productsToBuyAdapter.add(item)
+                productsToBuyAdapter.add(ShoppingListProductToBuyItem(productName))
                 boughtProductsAdapter.remove(item)
 
-                if(productsToBuyAdapter.itemCount == 0) {
+                /*if(productsToBuyAdapter.itemCount == 0) {
                     Toast.makeText(this.context, "Wszystkie produkty zostały kupione.", Toast.LENGTH_SHORT)
                         .show()
                 }
@@ -146,7 +153,7 @@ class ProductsActivity : AppCompatActivity() {
                 if(boughtProductsAdapter.itemCount == 0) {
                     Toast.makeText(this.context, "Brak kupionych produktów.", Toast.LENGTH_SHORT)
                         .show()
-                }
+                }*/
 
                 ref.setValue(shoppingList!!)
 
@@ -154,14 +161,14 @@ class ProductsActivity : AppCompatActivity() {
             }
 
             if(arguments?.getInt(ARG_SECTION_NUMBER) == 1) {
-                rootView.products_RecyclerView.adapter =
-                    productsToBuyAdapter
+                rootView.products_RecyclerView.adapter = productsToBuyAdapter
             } else {
-                rootView.products_RecyclerView.adapter =
-                    boughtProductsAdapter
+                rootView.products_RecyclerView.adapter = boughtProductsAdapter
             }
 
-            rootView.products_RecyclerView.addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
+            val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
+
+            rootView.products_RecyclerView.layoutManager = layoutManager
 
             return rootView
         }

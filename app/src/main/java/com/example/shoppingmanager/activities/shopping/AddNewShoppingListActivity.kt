@@ -10,6 +10,8 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.telephony.SmsManager
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import com.example.shoppingmanager.R
 import com.example.shoppingmanager.models.Product
@@ -55,6 +57,10 @@ class AddNewShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongC
                 val product = Product(productText)
                 productsList.add(product)
 
+                productsList.sortBy{
+                    it.productName
+                }
+
                 productAdapter = ProductAdapter(this, productsList)
                 productsList_RecyclerView.adapter = productAdapter
 
@@ -71,6 +77,10 @@ class AddNewShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongC
                 val id = UUID.randomUUID().toString()
                 val products = HashMap<String, Boolean>()
 
+                productsList.sortBy{
+                    it.productName
+                }
+
                 productsList.forEach {
                     products[it.productName] = false
                 }
@@ -82,6 +92,26 @@ class AddNewShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongC
                 trySendSmsNotification()
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_add_shopping_list, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menuInfo -> {
+                val dialog = AlertDialog.Builder(this)
+                dialog.setTitle("Informacja")
+                    .setMessage("Aby usunąć już dodany produkt: kliknij i przytrzymaj.")
+                    .setPositiveButton("OK") { _, _ -> }
+                    .show()
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun trySendSmsNotification() {
@@ -140,6 +170,11 @@ class AddNewShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongC
             .setMessage("Czy na pewno chcesz się usunąć ten produkt z listy zakupów?")
             .setPositiveButton("TAK") { _, _ ->
                 productsList.removeAt(index)
+
+                productsList.sortBy{
+                    it.productName
+                }
+
                 productAdapter = ProductAdapter(this, productsList)
                 productsList_RecyclerView.adapter = productAdapter
             }

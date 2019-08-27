@@ -55,6 +55,9 @@ class RegistrationActivity : AppCompatActivity() {
             return
         }
 
+        Toast.makeText(this, "Rejestrowanie użytkownika...", Toast.LENGTH_SHORT)
+            .show()
+
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (!it.isSuccessful) return@addOnCompleteListener
@@ -72,9 +75,6 @@ class RegistrationActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
         val user = User(uid, nickInputRegister_EditText.text.toString(), phoneNumber)
-
-        Toast.makeText(this, "Rejestrowanie użytkownika...", Toast.LENGTH_SHORT)
-            .show()
 
         ref.setValue(user)
             .addOnSuccessListener {

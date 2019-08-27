@@ -9,6 +9,8 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.telephony.SmsManager
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import com.example.shoppingmanager.R
 import com.example.shoppingmanager.models.Product
@@ -60,6 +62,10 @@ class EditShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongCli
                 val product = Product(productText)
                 productsList.add(product)
 
+                productsList.sortBy{
+                    it.productName
+                }
+
                 productAdapter = ProductAdapter(this, productsList)
                 productsList_EditRecyclerView.adapter = productAdapter
 
@@ -87,39 +93,35 @@ class EditShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongCli
                 trySendSmsNotification()
             }
         }
+    }
 
-        /*updateShoppingList_Button.setOnClickListener {
-            if (products_EditText.text.isNotEmpty()) {
-                val shoppingListText = products_EditText.text.toString()
-                val productsList = shoppingListText.split("\n")
-                val uid = FirebaseAuth.getInstance().uid
-                val id = shoppingList!!.id
-                val products = HashMap<String, Boolean>()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_add_shopping_list, menu)
 
-                productsList.forEach {
-                    products[it] = false
-                }
+        return super.onCreateOptionsMenu(menu)
+    }
 
-                val updatedShoppingList = ShoppingList(id, products, Date(), numberOfShoppingLists)
-                val ref = FirebaseDatabase.getInstance().getReference("/shopping-lists/$uid/${shoppingList!!.id}")
-
-                ref.setValue(updatedShoppingList)
-
-                trySendSmsNotification()
-            } else {
-                Toast.makeText(this, "Pole nie może być puste.", Toast.LENGTH_SHORT).show()
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menuInfo -> {
+                val dialog = AlertDialog.Builder(this)
+                dialog.setTitle("Informacja")
+                    .setMessage("Aby usunąć już dodany produkt: kliknij i przytrzymaj.")
+                    .setPositiveButton("OK") { _, _ -> }
+                    .show()
             }
+        }
 
-            finish()
-            val intent = Intent(this, ShoppingListsActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        }*/
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupData() {
         for ((key, _) in shoppingList!!.products) {
             productsList.add(Product(key))
+        }
+
+        productsList.sortBy{
+            it.productName
         }
 
         productAdapter = ProductAdapter(this, productsList)
@@ -180,6 +182,11 @@ class EditShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongCli
             .setMessage("Czy na pewno chcesz się usunąć ten produkt z listy zakupów?")
             .setPositiveButton("TAK") { _, _ ->
                 productsList.removeAt(index)
+
+                productsList.sortBy{
+                    it.productName
+                }
+
                 productAdapter = ProductAdapter(this, productsList)
                 productsList_EditRecyclerView.adapter = productAdapter
             }

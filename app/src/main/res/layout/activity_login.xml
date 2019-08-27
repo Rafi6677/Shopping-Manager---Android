@@ -7,6 +7,15 @@
         android:background="@color/colorBackground"
         android:focusableInTouchMode="true">
 
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp" app:srcCompat="@drawable/ic_shopping_cart"
+            android:id="@+id/imageView3"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent"/>
     <Button
             android:text="Zaloguj się"
             android:layout_width="0dp"
@@ -60,11 +69,12 @@
     <TextView
             android:text="Shopping Manager"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             android:textSize="29sp"
             android:id="@+id/textView2" app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp" android:layout_marginTop="32dp" app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_marginRight="8dp" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3"/>
 </android.support.constraint.ConstraintLayout>

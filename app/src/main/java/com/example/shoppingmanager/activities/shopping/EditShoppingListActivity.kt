@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.activity_edit_shopping_list.*
 import java.util.*
 import kotlin.collections.HashMap
 
-class EditShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongClicked {
+class EditShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemClicked, ProductAdapter.ItemLongClicked {
 
     private var productsList: ArrayList<Product> = ArrayList()
     private var productAdapter: RecyclerView.Adapter<ProductAdapter.ViewHolder> ?= null
@@ -174,6 +174,20 @@ class EditShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongCli
         val intent = Intent(this, ShoppingListsActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    override fun onItemClicked(index: Int) {
+        val productName = productsList[index].productName
+        editProduct_EditText.setText(productName)
+
+        productsList.removeAt(index)
+
+        productsList.sortBy{
+            it.productName
+        }
+
+        productAdapter = ProductAdapter(this, productsList)
+        productsList_EditRecyclerView.adapter = productAdapter
     }
 
     override fun onItemLongClicked(index: Int) {

@@ -10,11 +10,13 @@ import com.example.shoppingmanager.R
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.shoppingmanager.models.ShoppingList
 import com.example.shoppingmanager.viewmodels.ShoppingListProductBoughtItem
@@ -156,7 +158,7 @@ class ProductsActivity : AppCompatActivity() {
                 rootView.products_RecyclerView.adapter = boughtProductsAdapter
             }
 
-            val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
+            val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
             rootView.products_RecyclerView.layoutManager = layoutManager
 

@@ -1,5 +1,6 @@
 package com.example.shoppingmanager.viewmodels
 
+import android.content.ClipData
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -11,7 +12,12 @@ import com.example.shoppingmanager.models.Product
 
 class ProductAdapter(context: Context, val productsList: ArrayList<Product>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>(){
 
+    private var activityItem: ItemClicked = context as ItemClicked
     private var activityItemLong: ItemLongClicked = context as ItemLongClicked
+
+    interface ItemClicked {
+        fun onItemClicked(index: Int)
+    }
 
     interface ItemLongClicked {
         fun onItemLongClicked(index: Int)
@@ -24,6 +30,10 @@ class ProductAdapter(context: Context, val productsList: ArrayList<Product>) : R
             itemView.setOnLongClickListener {
                 activityItemLong.onItemLongClicked(productsList.indexOf(it.tag as Product))
                 it.isLongClickable
+            }
+
+            itemView.setOnClickListener {
+                activityItem.onItemClicked(productsList.indexOf(it.tag as Product))
             }
         }
     }

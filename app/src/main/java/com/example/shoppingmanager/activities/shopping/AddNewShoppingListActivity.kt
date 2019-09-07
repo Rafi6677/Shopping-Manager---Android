@@ -25,7 +25,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class AddNewShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongClicked {
+class AddNewShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemClicked, ProductAdapter.ItemLongClicked {
 
     private var productsList: ArrayList<Product> = ArrayList()
     private var productAdapter: RecyclerView.Adapter<ProductAdapter.ViewHolder> ?= null
@@ -162,6 +162,20 @@ class AddNewShoppingListActivity : AppCompatActivity(), ProductAdapter.ItemLongC
         val intent = Intent(this, ShoppingListsActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    override fun onItemClicked(index: Int) {
+        val productName = productsList[index].productName
+        product_EditText.setText(productName)
+
+        productsList.removeAt(index)
+
+        productsList.sortBy{
+            it.productName
+        }
+
+        productAdapter = ProductAdapter(this, productsList)
+        productsList_RecyclerView.adapter = productAdapter
     }
 
     override fun onItemLongClicked(index: Int) {
